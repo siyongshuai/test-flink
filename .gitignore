@@ -1,0 +1,13 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Scala template
+*.class
+*.log
+*.iml
+.idea/
+/target/
+*/target/
+/dmp-assembly/target/
+/dmp-assembly/src/shade/target/
+/build/
+pom.xml.versionsBackup
+dependency-reduced-pom.xml

@@ -27,14 +27,14 @@ object OperateKafka {
     val readTopic = parameterTool.get("read-topic", DEFAULT_READ_TOPIC)
     val sendTopic = parameterTool.get("send-topic", DEFAULT_SEND_TOPIC)
     val checkPointPath = parameterTool.get("checkpoint", DEFAULT_CHECK_PATH)
-    val env = StreamExecutionEnvironment.getExecutionEnvironment
+    val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
     env.enableCheckpointing(10000)
     env.getCheckpointConfig.setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE)
     env.getCheckpointConfig.setCheckpointTimeout(6000)
 
     env.getCheckpointConfig.enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
-    env.getCheckpointConfig.setMaxConcurrentCheckpoints(1)
+    env.getCheckpointConfig.setMaxConcurrentCheckpoints(10)
 
     env.setStateBackend(new FsStateBackend(checkPointPath, true))
     val kafkaProps = new Properties()
@@ -49,7 +49,7 @@ object OperateKafka {
 
 
     //    transaction.print()
-    val changedDataStream = transaction.map(x => (s"record_${x}", 1))
+    val changedDataStream: DataStream[String] = transaction.map(x => (s"record_${x}", 1))
       //      .setParallelism(20)
       .keyBy(0)
       .sum(1)
